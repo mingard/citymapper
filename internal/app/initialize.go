@@ -14,5 +14,5 @@ func (c *CityMapper) InitializeGraph() {
 
 // FetchData retreives the OSM data from the source.
 func (c *CityMapper) FetchData() {
-	c.Must(c.loadAndParseSource(c.sourceUrl))
+	c.Must(c.loadAndParseSource())
 }

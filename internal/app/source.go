@@ -7,34 +7,16 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"net/http"
+	"os"
 	"strconv"
 	"strings"
 )
 
 const expectedEdgeParts = 3
 
-// Close safely closes a stream.
-func Close(c io.Closer) error {
-	err := c.Close()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// doRequest performs an HTTP request
-func doRequest(url string) (*http.Response, error) {
-	resp, err := http.Get(url)
-
-	return resp, err
-}
-
 // parseData converts the data to edges.
-func (c *CityMapper) parseData(resp *http.Response) error {
-	defer Close(resp.Body)
-	scanner := bufio.NewScanner(resp.Body)
+func (c *CityMapper) parseData(r io.Reader) error {
+	scanner := bufio.NewScanner(r)
 
 	// Exit if line scanner fails.
 	if err := scanner.Err(); err != nil {
@@ -67,7 +49,7 @@ func (c *CityMapper) parseData(resp *http.Response) error {
 			continue
 		}
 
-		// Break up the string
+		// Break up the string.
 		parts := strings.Fields(scanner.Text())
 
 		if actual := len(parts); actual != expectedEdgeParts {
@@ -90,15 +72,18 @@ func (c *CityMapper) parseData(resp *http.Response) error {
 	return nil
 }
 
-func (c *CityMapper) loadAndParseSource(url string) error {
-	srcData, err := doRequest(url)
-
-	// Error fetching data from source
+func (c *CityMapper) loadAndParseSource() error {
+	file, err := os.Open(c.sourcePath)
 	if err != nil {
 		return err
 	}
 
-	c.parseData(srcData)
+	// Error fetching the data from source.
+	if err != nil {
+		return err
+	}
+
+	c.parseData(file)
 
 	return nil
 }

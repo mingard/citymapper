@@ -15,12 +15,12 @@ import (
 
 // CityMapper is the application root instance.
 type CityMapper struct {
-	graph     *graph.Graph
-	sourceUrl string
-	from      string
-	to        string
-	ctx       context.Context
-	cancel    context.CancelFunc
+	graph      *graph.Graph
+	sourcePath string
+	from       string
+	to         string
+	ctx        context.Context
+	cancel     context.CancelFunc
 }
 
 // Must handles errors.
@@ -39,7 +39,7 @@ func (c *CityMapper) Recover() {
 
 // SetDefaults sets the default configuration values.
 func (c *CityMapper) SetDefaults() {
-	c.sourceUrl = "https://s3-eu-west-1.amazonaws.com/citymapper-assets/citymapper-coding-test-graph.dat"
+	c.sourcePath = "citymapper-coding-test-graph.dat"
 	c.from = "876500321"
 	c.to = "1524235806"
 }
@@ -70,7 +70,7 @@ func (c *CityMapper) HandleExit() {
 }
 
 // New returns a new FoundlandFrontend instance.
-func New() *CityMapper {
+func New(source, from, to string) *CityMapper {
 	ctx, cancel := context.WithCancel(context.Background())
 	cm := &CityMapper{
 		ctx:    ctx,
@@ -78,6 +78,11 @@ func New() *CityMapper {
 	}
 
 	cm.SetDefaults()
+
+	cm.sourcePath = source
+	cm.from = from
+	cm.to = to
+
 	cm.HandleExit()
 	cm.Initialize()
 

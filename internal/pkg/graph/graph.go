@@ -4,31 +4,25 @@
 package graph
 
 // edge contains details of a related node and the distance (weight).
-type edge struct {
-	node   string
-	weight int
-}
+type edge map[string]int
 
 // Graph stores graph nodes.
 type Graph struct {
-	nodes map[string][]edge
+	nodes map[string]edge
 }
 
 // AddEdge creates a reference and reverse reference edge.
 func (g *Graph) AddEdge(origin, destiny string, weight int) {
-	g.nodes[origin] = append(g.nodes[origin], edge{
-		node:   destiny,
-		weight: weight,
-	})
-	g.nodes[destiny] = append(g.nodes[destiny], edge{
-		node:   origin,
-		weight: weight,
-	})
-}
+	// Create nodes if missing.
+	if g.nodes[origin] == nil {
+		g.nodes[origin] = make(edge)
+	}
+	if g.nodes[destiny] == nil {
+		g.nodes[destiny] = make(edge)
+	}
 
-// GetEdges fetches a node from the data store.
-func (g *Graph) GetEdges(node string) []edge {
-	return g.nodes[node]
+	g.nodes[origin][destiny] = weight
+	g.nodes[destiny][origin] = weight
 }
 
 // GetPath locates the shortest path between two nodes.
@@ -51,10 +45,10 @@ func (g *Graph) GetPath(origin, destiny string) (int, []string) {
 			return p.value, p.nodes
 		}
 
-		for _, e := range g.GetEdges(node) {
-			if !visited[e.node] {
+		for edge, weight := range g.nodes[node] {
+			if !visited[edge] {
 				// Increase and store the total weight, and push the latest path node.
-				h.push(path{value: p.value + e.weight, nodes: append([]string{}, append(p.nodes, e.node)...)})
+				h.push(path{value: p.value + weight, nodes: append([]string{}, append(p.nodes, edge)...)})
 			}
 		}
 
@@ -67,6 +61,6 @@ func (g *Graph) GetPath(origin, destiny string) (int, []string) {
 // New creates a new instance of graph
 func New() *Graph {
 	return &Graph{
-		nodes: make(map[string][]edge),
+		nodes: make(map[string]edge),
 	}
 }

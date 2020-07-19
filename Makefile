@@ -17,10 +17,6 @@ NAME := $(PROJECT)-$(ARCH)
 TARGET := $(shell pwd)/bin/$(NAME)
 ENTRYPOINT := cmd/$(PROJECT).go
 
-# Container tag/registry variables
-# TAG_PREFIX ?= local
-# TAG := $(TAG_PREFIX)/$(OWNER)/$(NAME)
-
 # Go command variables
 GOCMD=go
 GOBUILD=$(GOCMD) build
@@ -65,7 +61,7 @@ clean:
 	rm -f $(TARGET)
 	
 run: build
-	@$(TARGET)
+	@$(TARGET) $(filter-out $@,$(MAKECMDGOALS))
 
 %:
 	@true
