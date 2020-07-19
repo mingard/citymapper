@@ -46,7 +46,10 @@ func (c *CityMapper) SetDefaults() {
 
 // Run performs a lookup on the initialized data.
 func (c *CityMapper) Run() {
+	// start := time.Now()
 	dist, _ := c.graph.GetPath(c.from, c.to)
+	// elapsed := time.Since(start)
+	// fmt.Printf("Calculation took %s", elapsed)
 	fmt.Println(dist)
 }
 

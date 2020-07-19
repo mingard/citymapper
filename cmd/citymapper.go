@@ -5,7 +5,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"os"
 
@@ -14,7 +13,6 @@ import (
 
 func main() {
 	args := os.Args[1:]
-	fmt.Println("ARGS", args)
 
 	if len(args) != 3 {
 		err := errors.New("Invalid arguements")
