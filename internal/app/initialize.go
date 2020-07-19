@@ -4,12 +4,12 @@
 package app
 
 import (
-	"github.com/mingard/citymapper/internal/pkg/dag"
+	"github.com/mingard/citymapper/internal/pkg/graph"
 )
 
-// InitializeStore creates a new Directed acyclic graph store.
-func (c *CityMapper) InitializeStore() {
-	c.datastore = dag.New()
+// InitializeGraph creates a new graph instance.
+func (c *CityMapper) InitializeGraph() {
+	c.graph = graph.New()
 }
 
 // FetchData retreives the OSM data from the source.
