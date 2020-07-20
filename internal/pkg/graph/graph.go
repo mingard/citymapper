@@ -12,36 +12,37 @@ type Graph struct {
 }
 
 // AddEdge creates a reference and reverse reference edge.
-func (g *Graph) AddEdge(origin, destiny string, weight int) {
+func (g *Graph) AddEdge(origin, dest string, weight int) {
 	// Create nodes if missing.
 	if g.nodes[origin] == nil {
 		g.nodes[origin] = make(edge)
 	}
-	if g.nodes[destiny] == nil {
-		g.nodes[destiny] = make(edge)
+	if g.nodes[dest] == nil {
+		g.nodes[dest] = make(edge)
 	}
 
-	g.nodes[origin][destiny] = weight
-	g.nodes[destiny][origin] = weight
+	g.nodes[origin][dest] = weight
+	g.nodes[dest][origin] = weight
 }
 
 // GetPath locates the shortest path between two nodes.
-func (g *Graph) GetPath(origin, destiny string) (int, []string) {
+func (g *Graph) GetPath(origin, dest string) (int, []string) {
 	h := newHeap()
 	h.push(path{value: 0, nodes: []string{origin}})
 	visited := make(map[string]bool)
 
 	for len(*h.values) > 0 {
-		// Find the nearest yet to visit node
+		// Find the closest node we haven't attempted.
 		p := h.pop()
 		node := p.nodes[len(p.nodes)-1]
 
-		// Skip if this node has already been visited.
+		// Skip if this node has already been attempted.
 		if visited[node] {
 			continue
 		}
 
-		if node == destiny {
+		// If the node is the destination exit the loop with a return.
+		if node == dest {
 			return p.value, p.nodes
 		}
 
