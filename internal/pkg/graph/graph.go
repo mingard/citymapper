@@ -27,13 +27,19 @@ func (g *Graph) AddEdge(origin, dest string, weight int) {
 
 // GetPath locates the shortest path between two nodes.
 func (g *Graph) GetPath(origin, dest string) (int, []string) {
+	// Create an empty heap, then push our origin node into it.
 	h := newHeap()
 	h.push(path{value: 0, nodes: []string{origin}})
+	// Empty store of visited nodes.
 	visited := make(map[string]bool)
 
+	// This loop will continue as long as we keep pushing nodes into the heap.
+	// Initially, it would only run once.
 	for len(*h.values) > 0 {
 		// Find the closest node we haven't attempted.
+		// Pop returns and removes a node from the heap.
 		p := h.pop()
+		// Get the last edge in the node list.
 		node := p.nodes[len(p.nodes)-1]
 
 		// Skip if this node has already been attempted.
@@ -45,14 +51,19 @@ func (g *Graph) GetPath(origin, dest string) (int, []string) {
 		if node == dest {
 			return p.value, p.nodes
 		}
-
+		// For each edge in the corresponding node in the graphs node list.
 		for edge, weight := range g.nodes[node] {
+			// Skip if we've visited this edge.
 			if !visited[edge] {
-				// Increase and store the total weight, and push the latest path node.
-				h.push(path{value: p.value + weight, nodes: append([]string{}, append(p.nodes, edge)...)})
+				// Push our edge into the node list. 
+				// When the loop cycles again this will be our new parent node.
+				nodes := append([]string{}, append(p.nodes, edge)...)
+				// Increase and store the total weight, and update the list of visited nodes.
+				h.push(path{value: p.value + weight, nodes: nodes})
 			}
 		}
 
+		// Add this node to the list of visited nodes.
 		visited[node] = true
 	}
 
