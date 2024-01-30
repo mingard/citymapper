@@ -47,6 +47,3 @@ There were no asynchronous read/write operations against any of the data stores,
 Theoretically it would be possible to start the process from both origin and destination and close a path at the intersection, which would've been my next benchmark.
 
 I originally started using a Directed Acyclic Graph and stored the addresses as uint32. I removed this method during experimentation with Dijkstra's Algorithm, and instead used a heap, but it would be interesting the benchmark the performance as uint32 have far lighter memory _and_ CPU usage than string pointers.
-
-## Hire
-me
